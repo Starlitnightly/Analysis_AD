@@ -1,0 +1,116 @@
+﻿
+library(WGCNA)
+
+
+library("openxlsx")
+datExpr = read.csv("adtt.csv",row.names = 1)
+datExpr = t(datExpr)
+multiExpr=list(list(data = datExpr))
+exprSize = checkSets(multiExpr)
+nSets = exprSize$nSets
+nGenes = exprSize$nGenes
+nSamples = exprSize$nSamples
+
+
+t1=read.csv(("adt.csv",row.names = 1))
+datTraits=data.frame(t1)
+
+
+powers = c(c(1:10), seq(from = 12, to=20, by=2))
+
+sft = pickSoftThreshold(multiExpr[[1]]$data, powerVector = powers, verbose = 5)
+#plt
+sizeGrWindow(9, 5)
+par(mfrow = c(1,2));
+cex1 = 0.9;
+# Scale-free topology fit index as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     xlab="Soft Threshold (power)",ylab="Scale Free Topology Model Fit,signed R^2",type="n",
+     main = paste("Scale independence"));
+text(sft$fitIndices[,1], -sign(sft$fitIndices[,3])*sft$fitIndices[,2],
+     labels=powers,cex=cex1,col="red");
+# this line corresponds to using an R^2 cut-off of h
+abline(h=0.90,col="red")
+# Mean connectivity as a function of the soft-thresholding power
+plot(sft$fitIndices[,1], sft$fitIndices[,5],
+     xlab="Soft Threshold (power)",ylab="Mean Connectivity", type="n",
+     main = paste("Mean connectivity"))
+text(sft$fitIndices[,1], sft$fitIndices[,5], labels=powers, cex=cex1,col="red")
+
+
+softPower <- sft$powerEstimate
+adjacency = adjacency(multiExpr[[1]]$data, power = softPower);
+
+TOM = TOMsimilarity(adjacency);
+
+dissTOM = 1-TOM
+hierTOM = hclust(as.dist(dissTOM),method="average");
+
+
+# ADJ1_cor <- abs(WGCNA::cor( multiExpr[[1]]$data,use = "p" ))^softPower
+k <- softConnectivity(datE=multiExpr[[1]]$data,power=softPower) 
+sizeGrWindow(10, 5)
+par(mfrow=c(1,2))
+hist(k)
+scaleFreePlot(k,main="Check Scale free topology\n")
+
+#cluster
+geneTree = hclust(as.dist(dissTOM), method = "average");
+# Plot the resulting clustering tree (dendrogram)
+windows()
+sizeGrWindow(12,9)
+plot(geneTree, xlab="", sub="", main = "Gene clustering on TOM-based dissimilarity",
+     labels = FALSE, hang = 0.04);
+
+minModuleSize = 30;
+
+dynamicMods = cutreeDynamic(dendro = geneTree, distM = dissTOM,
+                            deepSplit = 2, pamRespectsDendro = FALSE,
+                            minClusterSize = minModuleSize);
+table(dynamicMods)
+
+
+dynamicColors <- labels2colors(dynamicMods)
+table(dynamicColors)
+ 
+plotDendroAndColors(geneTree, dynamicColors, 'Dynamic Tree Cut',
+    dendroLabels = FALSE, addGuide = TRUE, hang = 0.03, guideHang = 0.05,
+    main = 'Gene dendrogram and module colors')
+
+
+#heatmap
+plot_sim <- -(1-TOM)
+plot_sim <- log(TOM)
+diag(plot_sim) <- NA
+TOMplot(plot_sim, geneTree, dynamicColors,
+    main = 'Network heatmap plot, selected genes')
+
+MEList <- moduleEigengenes(gene, colors = dynamicColors)
+MEs <- MEList$eigengenes
+head(MEs)[1:6]
+ 
+
+#write.table(MEs, 'moduleEigengenes.txt', sep = '\t', col.names = NA, quote = FALSE)
+
+
+moduleTraitCor_noFP <- cor(MEs, datTraits[,1:10], use = "p");
+moduleTraitPvalue_noFP = corPvalueStudent(moduleTraitCor_noFP, nSamples); 
+textMatrix_noFP <- paste(signif(moduleTraitCor_noFP, 2), "\n(", signif(moduleTraitPvalue_noFP, 1), ")", sep = ""); 
+par(mar = c(10, 8.5, 3, 3)); 
+labeledHeatmap(Matrix = moduleTraitCor_noFP, 
+               xLabels = names(datTraits[,1:10]), 
+               yLabels = names(MEs), 
+               ySymbols = names(MEs), 
+               colorLabels = FALSE, 
+               colors = blueWhiteRed(50), 
+               textMatrix = textMatrix_noFP,
+               setStdMargins = FALSE, 
+               cex.text = 0.65, 
+               zlim = c(-1,1), 
+               main = paste("Module-trait relationships")) 
+
+#关系
+gene_module <- data.frame(gene_name = colnames(multiExpr[[1]]$data), module = dynamicColors, stringsAsFactors = FALSE)
+write.table (gene_module, file ="res.csv", sep =",", row.names =TRUE, col.names =TRUE, quote =TRUE)
+
+
