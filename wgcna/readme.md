@@ -1,0 +1,12 @@
+## Content
+
+This folder contains the result of Fig.4
+
+- `wgcna_code.ipynb`: Analysis of WGCNA
+
+## Result
+
+![Fig 4](https://ars.els-cdn.com/content/image/1-s2.0-S1465324921007544-gr4.jpg)
+
+[^Fig.4]: [Proteomic](https://www.sciencedirect.com/topics/medicine-and-dentistry/proteomics) analysis of [SAMP8](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/senescence-accelerated-mouse) mice treated with SHEDs. (A) Co-expression analysis diagram of proteomics and behavioral data. Clustering of 1960 proteins and traits (left), correlation analysis of each co-expression module and behavioral data (right) and MEyellow module (red rectangle). (B) Expression mapping of 160 proteins in MEyellow module. The higher the correlation degree the more the middle position, and the lower the correlation degree the closer the position is to the edge. (C) Component diagram of pathway analysis between KEGG and [GO](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/gene-ontology). BNA, beta-N-acetylhexosaminidase activity; CB, [clathrin](https://www.sciencedirect.com/topics/medicine-and-dentistry/clathrin) binding; CCP, clathrin-coated pit; CPCD, cellular [protein complex](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/protein-complexes) disassembly; CR, [cellular respiration](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/cellular-respiration); CT, cytosolic transport; DCDA, dodecenoyl-coenzyme A delta-isomerase activity; EHA, [epoxide hydrolase](https://www.sciencedirect.com/topics/medicine-and-dentistry/epoxide-hydrolase) activity; [GABA](https://www.sciencedirect.com/topics/medicine-and-dentistry/gamma-aminobutyric-acid), gamma-aminobutyric acid-ergic synapse; GO-bio, GO-biological; GO-cell, GO-cellular; GO-mole, GO-molecular; MT, microtubule; PNTMP, purine [nucleoside triphosphate](https://www.sciencedirect.com/topics/medicine-and-dentistry/nucleoside-triphosphate) metabolic process; PPB, [phosphatidylinositol phosphate](https://www.sciencedirect.com/topics/medicine-and-dentistry/polyphosphoinositide) binding; PRIT, positive regulation of [intracellular transport](https://www.sciencedirect.com/topics/medicine-and-dentistry/intracellular-transport); PRPL, positive regulation of [protein localization](https://www.sciencedirect.com/topics/medicine-and-dentistry/protein-localization) to plasma membrane; SB, [syntaxin](https://www.sciencedirect.com/topics/medicine-and-dentistry/syntaxin) binding.
+
